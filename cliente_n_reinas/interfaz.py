@@ -2,11 +2,13 @@
 
 import tkinter as tk
 from juego import NReinasSolver
+from ia.ia_client import solicitar_sugerencia
 
 class InterfazNReinas:
     def __init__(self, master, tam_tablero=8):
         self.master = master
-        self.master.title("Juego de N Reinas")
+        self.master.title("Juego de N R" \
+        "einas")
         self.n = tam_tablero
         self.canvas_size = 480
         self.celda = self.canvas_size // self.n
@@ -25,6 +27,12 @@ class InterfazNReinas:
 
         self.boton_enviar = tk.Button(master, text="Enviar resultado", command=self.enviar_resultado)
         self.boton_enviar.pack(side=tk.LEFT, padx=10)
+
+        self.boton_ayuda = tk.Button(master, text="Ayuda IA", command=self.enviar_a_ia)
+        self.boton_ayuda.pack(side=tk.LEFT, padx=10)
+
+        self.boton_chatbot = tk.Button(master, text="Abrir Chatbot", command=self.abrir_chatbot)
+        self.boton_chatbot.pack(side=tk.LEFT, padx=10)
 
         self.label_info = tk.Label(master, text="")
         self.label_info.pack(side=tk.LEFT, padx=10)
@@ -63,6 +71,23 @@ class InterfazNReinas:
             x = col * self.celda + self.celda // 2
             y = fila * self.celda + self.celda // 2
             self.canvas.create_text(x, y, text="♛", font=("Arial", 20), fill="red")
+    
+    def abrir_chatbot(self):
+        from ia.chatbot_panel import ChatbotPanel
+        ChatbotPanel(self.master)
+
+    def enviar_a_ia(self):
+        try:
+            estado = {
+                "n": self.n,
+                "solucion": self.solucion,
+                "pasos": self.pasos
+            }
+            import json
+            sugerencia = solicitar_sugerencia("n_reinas", json.dumps(estado))
+            self.label_info.config(text="IA: " + sugerencia[:100])  # corta si es muy largo
+        except Exception as e:
+            self.label_info.config(text=f"Error IA: {e}")
 
     def resolver(self):
         solver = NReinasSolver(self.n)
