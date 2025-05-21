@@ -2,7 +2,7 @@
 import socket
 import threading
 import json
-from servidor.modelos import inicializar_bd, Session, ResultadoNReinas, ResultadoCaballo, ResultadoHanoi
+from modelos import inicializar_bd, Session, ResultadoNReinas, ResultadoCaballo, ResultadoHanoi
 
 HOST = 'localhost'
 PORT = 5000
